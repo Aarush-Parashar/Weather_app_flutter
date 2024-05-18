@@ -1,7 +1,7 @@
 import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:weather_app_flutter/additional_info_items.dart';
+import 'hourly_forcast_items.dart';
 
 class WeatherScreen extends StatelessWidget {
   const WeatherScreen({super.key});
@@ -28,6 +28,7 @@ class WeatherScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               width: double.infinity,
@@ -71,22 +72,56 @@ class WeatherScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(
-              height: 20,
+            const SizedBox(height: 50),
+            const Text(
+              "Weather Forcast",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            const SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  HourlyForcastItem(),
+                  HourlyForcastItem(),
+                  HourlyForcastItem(),
+                  HourlyForcastItem(),
+                  HourlyForcastItem(),
+                ],
+              ),
             ),
 
-            //forecast
-            const Placeholder(
-              fallbackHeight: 150,
-            ),
-
             const SizedBox(
-              height: 20,
+              height: 50,
             ),
 
             //additional info
-            const Placeholder(
-              fallbackHeight: 150,
+            const Text(
+              "Additional Information",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                AdditionalInfoItems(
+                  icon: Icons.water_drop,
+                  label: "Humidity",
+                  value: "91",
+                ),
+                AdditionalInfoItems(
+                  icon: Icons.wind_power,
+                  label: "Wind Speed",
+                  value: "7.5",
+                ),
+                AdditionalInfoItems(
+                  icon: Icons.beach_access,
+                  label: "Pressure",
+                  value: "100",
+                ),
+              ],
             ),
           ],
         ),
