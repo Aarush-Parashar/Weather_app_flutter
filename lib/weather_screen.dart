@@ -1,10 +1,34 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:weather_app_flutter/additional_info_items.dart';
+import 'package:weather_app_flutter/secrets.dart';
 import 'hourly_forcast_items.dart';
+import 'package:http/http.dart' as http;
 
-class WeatherScreen extends StatelessWidget {
+class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
+
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    getCurrentWeather();
+  }
+
+  Future getCurrentWeather() async {
+    String cityName = 'London';
+    final res = await http.get(
+      Uri.parse(
+          'https://api.openweathermap.org/data/2.5/weather?q=$cityName&APPID=$OpenWeatherApiKey'),
+    );
+
+    print(res.body);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +46,7 @@ class WeatherScreen extends StatelessWidget {
               onPressed: () {
                 print('refresh');
               },
-              icon: Icon(Icons.refresh))
+              icon: const Icon(Icons.refresh))
         ],
       ),
       body: Padding(
@@ -46,7 +70,7 @@ class WeatherScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            'Degree farenhiet ° F',
+                            'temperature kelvin',
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
@@ -82,11 +106,31 @@ class WeatherScreen extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  HourlyForcastItem(),
-                  HourlyForcastItem(),
-                  HourlyForcastItem(),
-                  HourlyForcastItem(),
-                  HourlyForcastItem(),
+                  HourlyForcastItem(
+                    time: "00:00",
+                    temperature: "300K",
+                    icon: Icons.cloud,
+                  ),
+                  HourlyForcastItem(
+                    time: "03:00",
+                    temperature: "320K",
+                    icon: Icons.sunny,
+                  ),
+                  HourlyForcastItem(
+                    time: "06:00",
+                    temperature: "250K",
+                    icon: Icons.thunderstorm,
+                  ),
+                  HourlyForcastItem(
+                    time: "09:00",
+                    temperature: "270K",
+                    icon: Icons.thunderstorm,
+                  ),
+                  HourlyForcastItem(
+                    time: "12:00",
+                    temperature: "300K",
+                    icon: Icons.sunny,
+                  ),
                 ],
               ),
             ),
@@ -112,7 +156,7 @@ class WeatherScreen extends StatelessWidget {
                   value: "91",
                 ),
                 AdditionalInfoItems(
-                  icon: Icons.wind_power,
+                  icon: Icons.air,
                   label: "Wind Speed",
                   value: "7.5",
                 ),
