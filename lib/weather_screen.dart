@@ -64,7 +64,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
           final data = snapshot.data!;
 
-          final currentTemp = data['list'][0]['main']['temp'];
+          final currentWeatherData = data['list'][0];
+          final currentPressure = currentWeatherData['main']['pressure'];
+
+          final currentTemp = currentWeatherData['main']['temp'];
+          final currentSky = currentWeatherData['weather'][0]['main'];
+          final currentWind = currentWeatherData['main']['wind']['speed'];
 
           if (snapshot.hasError) {
             return Center(child: Text(snapshot.error.toString()));
@@ -98,14 +103,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
                                 ),
                               ),
                               const SizedBox(height: 20),
-                              const Icon(
-                                Icons.cloud,
+                              Icon(
+                                currentSky == 'Clouds' || currentSky == 'Rain'
+                                    ? Icons.cloud
+                                    : Icons.sunny,
                                 size: 100,
                               ),
                               const SizedBox(height: 20),
-                              const Text(
-                                'Rain',
-                                style: TextStyle(
+                              Text(
+                                '$currentSky',
+                                style: const TextStyle(
                                   fontSize: 20,
                                 ),
                               )
@@ -168,7 +175,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 const SizedBox(
                   height: 16,
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     AdditionalInfoItems(
@@ -178,13 +185,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     ),
                     AdditionalInfoItems(
                       icon: Icons.air,
-                      label: "Wind Speed",
+                      label: currentWind.toString(),
                       value: "7.5",
                     ),
                     AdditionalInfoItems(
                       icon: Icons.beach_access,
                       label: "Pressure",
-                      value: "100",
+                      value: currentPressure.toString(),
                     ),
                   ],
                 ),
