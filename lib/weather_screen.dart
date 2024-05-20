@@ -65,11 +65,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
           final data = snapshot.data!;
 
           final currentWeatherData = data['list'][0];
-          final currentPressure = currentWeatherData['main']['pressure'];
-
           final currentTemp = currentWeatherData['main']['temp'];
           final currentSky = currentWeatherData['weather'][0]['main'];
-          final currentWind = currentWeatherData['main']['wind']['speed'];
+          final currentPressure = currentWeatherData['main']['pressure'];
+          final currentWind = currentWeatherData['wind']['speed'];
+          final currentHumidity = currentWeatherData['main']['humidity'];
 
           if (snapshot.hasError) {
             return Center(child: Text(snapshot.error.toString()));
@@ -130,37 +130,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
-                const SingleChildScrollView(
+                SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
+                  child: Row(children: [
+                    for (int i = 0; i < 5;)
                       HourlyForcastItem(
-                        time: "00:00",
+                        time: data['list'][i + 1],
                         temperature: "300K",
                         icon: Icons.cloud,
                       ),
-                      HourlyForcastItem(
-                        time: "03:00",
-                        temperature: "320K",
-                        icon: Icons.sunny,
-                      ),
-                      HourlyForcastItem(
-                        time: "06:00",
-                        temperature: "250K",
-                        icon: Icons.thunderstorm,
-                      ),
-                      HourlyForcastItem(
-                        time: "09:00",
-                        temperature: "270K",
-                        icon: Icons.thunderstorm,
-                      ),
-                      HourlyForcastItem(
-                        time: "12:00",
-                        temperature: "300K",
-                        icon: Icons.sunny,
-                      ),
-                    ],
-                  ),
+                  ]),
                 ),
 
                 const SizedBox(
@@ -181,12 +160,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     AdditionalInfoItems(
                       icon: Icons.water_drop,
                       label: "Humidity",
-                      value: "91",
+                      value: currentHumidity.toString(),
                     ),
                     AdditionalInfoItems(
                       icon: Icons.air,
-                      label: currentWind.toString(),
-                      value: "7.5",
+                      label: 'Wind Speed',
+                      value: currentWind.toString(),
                     ),
                     AdditionalInfoItems(
                       icon: Icons.beach_access,
