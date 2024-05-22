@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:weather_app_flutter/additional_info_items.dart';
 import 'package:weather_app_flutter/secrets.dart';
 import 'hourly_forcast_items.dart';
@@ -14,9 +15,10 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  late Future<Map<String, dynamic>> weather;
   Future<Map<String, dynamic>> getCurrentWeather() async {
     try {
-      String cityName = 'Bhavnagar';
+      String cityName = 'Delhi';
       final res = await http.get(
         Uri.parse(
           'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&APPID=$openWeatherApiKey',
@@ -35,6 +37,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    weather = getCurrentWeather();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -48,13 +56,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                print('refresh');
+                setState(() {
+                  weather = getCurrentWeather();
+                });
               },
               icon: const Icon(Icons.refresh))
         ],
       ),
       body: FutureBuilder(
-        future: getCurrentWeather(),
+        future: weather,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -83,7 +93,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: Card(
-                    elevation: 10,
+                    elevation: 2,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -130,18 +140,31 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(children: [
-                    for (int i = 0; i < 5;)
-                      HourlyForcastItem(
-                        time: data['list'][i + 1],
-                        temperature: "300K",
-                        icon: Icons.cloud,
-                      ),
-                  ]),
-                ),
 
+                SizedBox(
+                  height: 150,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 5,
+                    itemBuilder: (context, index) {
+                      final hourlyForcast = data['list'][index + 1];
+                      final hourlySky =
+                          data['list'][index + 1]['weather'][0]['main'];
+                      final hourlyTemp =
+                          hourlyForcast['main']['temp'].toString();
+                      final time = DateTime.parse(
+                        hourlyForcast['dt_txt'].toString(),
+                      );
+                      return HourlyForcastItem(
+                        time: DateFormat.j().format(time),
+                        icon: hourlySky == 'Clouds' || hourlySky == 'Rain'
+                            ? Icons.cloud
+                            : Icons.sunny,
+                        temperature: hourlyTemp,
+                      );
+                    },
+                  ),
+                ),
                 const SizedBox(
                   height: 50,
                 ),

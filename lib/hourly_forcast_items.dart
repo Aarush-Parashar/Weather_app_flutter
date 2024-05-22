@@ -10,7 +10,7 @@ class HourlyForcastItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 6,
+      elevation: 3,
       child: Container(
         width: 120,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
@@ -19,7 +19,9 @@ class HourlyForcastItem extends StatelessWidget {
           children: [
             Text(
               time,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              maxLines: 1,
             ),
             const SizedBox(
               height: 8,
@@ -28,7 +30,7 @@ class HourlyForcastItem extends StatelessWidget {
               icon,
               size: 40,
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Text(
